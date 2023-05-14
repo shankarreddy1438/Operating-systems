@@ -1,0 +1,48 @@
+#include<stdio.h>
+
+struct process{
+    int pid;
+    int burst_time;
+    int arrival_time;
+    int waiting_time;
+    int turnaround_time;
+};
+
+int main(){
+    int i, n = 3;
+    float avg_wt = 0, avg_tat = 0;
+    struct process p[3];
+    
+    // Initialize the process structure
+    for(i=0; i<n; i++){
+        p[i].pid = i;
+        p[i].arrival_time = 0;
+        printf("Enter the burst time for process %d: ", i);
+        scanf("%d", &p[i].burst_time);
+        p[i].waiting_time = 0;
+        p[i].turnaround_time = 0;
+    }
+    
+    // Compute waiting time and turnaround time for each process
+    p[0].turnaround_time = p[0].burst_time;
+    for(i=1; i<n; i++){
+        p[i].waiting_time = p[i-1].turnaround_time;
+        p[i].turnaround_time = p[i].waiting_time + p[i].burst_time;
+    }
+    
+    // Compute the total waiting time and total turnaround time
+    for(i=0; i<n; i++){
+        avg_wt += p[i].waiting_time;
+        avg_tat += p[i].turnaround_time;
+    }
+    
+    // Compute the average waiting time and average turnaround time
+    avg_wt = avg_wt / n;
+    avg_tat = avg_tat / n;
+    
+    // Print the results
+    printf("\nAverage Waiting Time: %0.2f\n", avg_wt);
+    printf("Average Turnaround Time: %0.2f\n", avg_tat);
+    
+    return 0;
+}
