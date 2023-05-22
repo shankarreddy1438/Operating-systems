@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define BLOCK_SIZE 8192
+#define POINTER_SIZE 4
+
+void contiguous_allocation(int block_number) {
+  // Check if the block number is valid
+  if (block_number < 0 || block_number >= 100) {
+    printf("Block number is not valid\n");
+    return;
+  }
+
+  // Calculate the number of disk I/O operations required
+  int num_disk_io_operations = 1;
+
+  // Write the block to disk
+  fwrite(&block_number, sizeof(int), 1, stdout);
+
+  // Print the number of disk I/O operations
+  printf("Number of disk I/O operations required for contiguous allocation: %d\n", num_disk_io_operations);
+}
+
+void linked_allocation(int block_number) {
+  // Check if the block number is valid
+  if (block_number < 0 || block_number >= 100) {
+    printf("Block number is not valid\n");
+    return;
+  }
+
+  // Calculate the number of disk I/O operations required
+  int num_disk_io_operations = 1;
+
+  // Write the block number to disk
+  fwrite(&block_number, sizeof(int), 1, stdout);
+
+  // Print the number of disk I/O operations
+  printf("Number of disk I/O operations required for linked allocation: %d\n", num_disk_io_operations);
+}
+
+void indexed_allocation(int block_number) {
+  // Check if the block number is valid
+  if (block_number < 0 || block_number >= 100) {
+    printf("Block number is not valid\n");
+    return;
+  }
+
+  // Calculate the number of disk I/O operations required
+  int num_disk_io_operations = 2;
+
+  // Write the block number to disk
+  fwrite(&block_number, sizeof(int), 1, stdout);
+
+  // Print the number of disk I/O operations
+  printf("Number of disk I/O operations required for indexed allocation: %d\n", num_disk_io_operations);
+}
+
+int main() {
+  // Initialize the file control block
+  int file_control_block[BLOCK_SIZE / sizeof(int)] = {0};
+
+  // Add a block at the beginning
+  contiguous_allocation(0);
+
+  // Add a block in the middle
+  contiguous_allocation(50);
+
+  // Add a block at the end
+  contiguous_allocation(99);
+
+  // Add a block at the beginning using linked allocation
+  linked_allocation(0);
+
+  // Add a block in the middle using linked allocation
+  linked_allocation(50);
+
+  // Add a block at the end using linked allocation
+  linked_allocation(99);
+
+  // Add a block at the beginning using indexed allocation
+  indexed_allocation(0);
+
+  // Add a block in the middle using indexed allocation
+  indexed_allocation(50);
+
+  // Add a block at the end using indexed allocation
+  indexed_allocation(99);
+
+  return 0;
+}
