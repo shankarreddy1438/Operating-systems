@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+#define NUM_PHILOSOPHERS 5
+
+typedef struct {
+  int id;
+  pthread_t thread;
+  int state;
+  pthread_mutex_t mutex;
+  pthread_cond_t cond;
+} Philosopher;
+
+void *philosopher(void *arg) {
+  Philosopher *philosopher = arg;
+
+  while (1) {
+    // Think
+    philosopher->state = THINKING;
+    printf("Philosopher %d is thinking\n", philosopher->id);
+    sleep(1);
+
+    // Check if neighbors are not eating
+    if (philosopher->left_neighbor->state != EATING &&
+        philosopher->right_neighbor->state != EATING) {
+      // Pick up forks
+      pthread_mutex_lock(&philosopher->mutex);
+      philosopher->state = HUNGRY;
+      pthread_cond_signal(&philosopher->cond);
+      pthread_mutex_unlock(&philosopher->mutex);
+
+      // Eat
+      while (philosopher->state != EATING) {
+        pthread_cond_wait(&philosopher->cond, &philosopher->mutex);
+      }
+
+      printf("Philosopher %d is eating\n", philosopher->id);
+      sleep(1);
+
+      // Put down forks
+      pthread_mutex_lock(&philosopher->mutex);
+      philosopher->state = THINKING;
+      pthread_cond_broadcast(&philosopher->cond);
+      pthread_mutex_unlock(&philosopher->mutex);
+    }
+  }
+
+  return NULL;
+}
+
+int main() {
+  Philosopher philosophers[NUM_PHILOSOPHERS];
+
+  // Create philosophers
+  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+    philosophers[i].id = i;
+    pthread_mutex_init(&philosophers[i].mutex, NULL);
+    pthread_cond_init(&philosophers[i].cond, NULL);
+  }
+
+  // Create threads
+  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+    pthread_create(&philosophers[i].thread, NULL, philosopher, &philosophers[i]);
+  }
+
+  // Wait for threads to finish
+  for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+    pthread_join(philosophers[i].thread, NULL);
+  }
+
+  return 0;
+}
