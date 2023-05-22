@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define BLOCK_SIZE 8192
+#define POINTER_SIZE 4
+
+void find_maximum_file_size(int num_direct_blocks, int num_single_indirect_blocks, int num_double_indirect_blocks) {
+  // Calculate the total number of blocks in the file system
+  int total_blocks = num_direct_blocks + num_single_indirect_blocks * 128 + num_double_indirect_blocks * 128 * 128;
+
+  // Calculate the maximum size of a file in bytes
+  int max_file_size = total_blocks * BLOCK_SIZE;
+
+  // Print the maximum file size
+  printf("The maximum file size is %d bytes\n", max_file_size);
+}
+
+int main() {
+  // Initialize the number of direct, single, and double indirect blocks
+  int num_direct_blocks = 12;
+  int num_single_indirect_blocks = 128;
+  int num_double_indirect_blocks = 128;
+
+  // Find the maximum file size
+  find_maximum_file_size(num_direct_blocks, num_single_indirect_blocks, num_double_indirect_blocks);
+
+  return 0;
+}
