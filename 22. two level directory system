@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_USERS 3
+#define MAX_FILES 3
+
+void create_user_directory(char *username) {
+  char path[100];
+  sprintf(path, "/home/%s", username);
+
+  if (mkdir(path, 0777) != 0) {
+    printf("Error creating directory %s\n", path);
+    exit(1);
+  }
+
+  printf("Directory %s created\n", path);
+}
+
+void create_file(char *username, char *filename) {
+  char path[100];
+  sprintf(path, "/home/%s/%s", username, filename);
+
+  FILE *file = fopen(path, "w");
+  if (file == NULL) {
+    printf("Error creating file %s\n", path);
+    exit(1);
+  }
+
+  printf("File %s created\n", path);
+  fclose(file);
+}
+
+int main() {
+  char usernames[MAX_USERS][10] = {"user1", "user2", "user3"};
+  char filenames[MAX_USERS][MAX_FILES][15] = {
+    {"file1.txt", "file2.txt", "file3.txt"},
+    {"file1.txt", "file2.txt", ""},
+    {"file1.txt", "", ""}
+  };
+
+  // Create user directories
+  for (int i = 0; i < MAX_USERS; i++) {
+    create_user_directory(usernames[i]);
+
+    // Create files in user directory
+    for (int j = 0; j < MAX_FILES; j++) {
+      if (strlen(filenames[i][j]) > 0) {
+        create_file(usernames[i], filenames[i][j]);
+      }
+    }
+  }
+
+  return 0;
+}
