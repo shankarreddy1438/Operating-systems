@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NUM_TRACKS 5
+
+void scan(int *track_positions, int head_position) {
+  int seek_time = 0;
+
+  // Move the head to the first request
+  for (int i = 0; i < NUM_TRACKS; i++) {
+    if (track_positions[i] < head_position) {
+      seek_time += head_position - track_positions[i];
+      head_position = track_positions[i];
+    }
+  }
+
+  // Move the head to the last request
+  for (int i = NUM_TRACKS - 1; i >= 0; i--) {
+    if (track_positions[i] > head_position) {
+      seek_time += track_positions[i] - head_position;
+      head_position = track_positions[i];
+    }
+  }
+
+  printf("Average head movement: %d\n", seek_time / NUM_TRACKS);
+}
+
+int main() {
+  // Initialize track positions
+  int track_positions[NUM_TRACKS] = {55, 58, 60, 70, 18};
+
+  // Set head position
+  int head_position = 50;
+
+  // Print average head movement
+  scan(track_positions, head_position);
+
+  return 0;
+}
