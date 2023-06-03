@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+  // Define the test case
+  int cylinders[] = {10, 20, 30, 40, 50, 60};
+  int head = 10;
+
+  // Initialize the total head movement
+  int total_head_movement = 0;
+
+  // Iterate through the cylinders and simulate the CSCAN algorithm
+  for (int i = 0; i < sizeof(cylinders) / sizeof(cylinders[0]); i++) {
+    // Calculate the seek time
+    int seek_time = abs(cylinders[i] - head);
+
+    // Update the head position
+    head = cylinders[i];
+
+    // Add the seek time to the total head movement
+    total_head_movement += seek_time;
+  }
+
+  // Calculate the average head movement
+  float average_head_movement = (float)total_head_movement / sizeof(cylinders) / sizeof(cylinders[0]);
+
+  // Print the average head movement
+  printf("Average head movement for CSCAN: %.2f\n", average_head_movement);
+
+  return 0;
+}
