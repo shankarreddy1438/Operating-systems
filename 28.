@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int main() {
+  // Create a file
+  int fd = open("myfile.txt", O_CREAT | O_WRONLY | O_TRUNC, 0666);
+
+  // Read data from the user
+  char buffer[1024];
+  printf("Enter some data: ");
+  fgets(buffer, 1024, stdin);
+
+  // Write data to the file
+  write(fd, buffer, strlen(buffer));
+
+  // Close the file
+  close(fd);
+
+  // Open the file for reading
+  fd = open("myfile.txt", O_RDONLY);
+
+  // Read data from the file
+  char data[1024];
+  read(fd, data, 1024);
+
+  // Print the data
+  printf("Data from the file: %s\n", data);
+
+  // Close the file
+  close(fd);
+
+  return 0;
+}
