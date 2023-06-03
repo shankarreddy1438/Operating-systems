@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct block {
+  int size;
+  int is_allocated;
+};
+
+struct memory {
+  int total_size;
+  struct block *blocks;
+};
+
+void init_memory(struct memory *mem, int size) {
+  mem->total_size = size;
+  mem->blocks = malloc(sizeof(struct block) * size);
+  for (int i = 0; i < size; i++) {
+    mem->blocks[i].size = 1;
+    mem->blocks[i].is_allocated = 0;
+  }
+}
+
+int first_fit(struct memory *mem, int size) {
+  for (int i = 0; i < mem->total_size; i++) {
+    if (!mem->blocks[i].is_allocated && mem->blocks[i].size >= size) {
+      mem->blocks[i].is_allocated = 1;
+      return i;
+    }
+  }
+  return -1;
+}
+
+void free_block(struct memory *mem, int index) {
+  mem->blocks[index].is_allocated = 0;
+}
+
+void print_memory(struct memory *mem) {
+  for (int i = 0; i < mem->total_size; i++) {
+    printf("Block %d: size = %d, allocated = %d\n", i, mem->blocks[i].size, mem->blocks[i].is_allocated);
+  }
+}
+
+int main() {
+  struct memory mem;
+  init_memory(&mem, 10);
+
+  // Allocate a block of size 5
+  int index = first_fit(&mem, 5);
+  if (index != -1) {
+    printf("Allocated block at index %d\n", index);
+  } else {
+    printf("Could not allocate block of size 5\n");
+  }
+
+  // Free the block at index 2
+  free_block(&mem, 2);
+
+  // Allocate a block of size 3
+  index = first_fit(&mem, 3);
+  if (index != -1) {
+    printf("Allocated block at index %d\n", index);
+  } else {
+    printf("Could not allocate block of size 3\n");
+  }
+
+  // Print the memory
+  print_memory(&mem);
+
+  return 0;
+}
