@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <semaphore.h>
+
+sem_t mutex;
+
+void signal_process() {
+  // Acquire the mutex
+  sem_wait(&mutex);
+
+  // Signal the waiting process
+  sem_post(&mutex);
+
+  // Release the mutex
+  sem_post(&mutex);
+}
+
+int main() {
+  // Initialize the semaphore
+  sem_init(&mutex, 0, 0);
+
+  // Create a process that will wait on the semaphore
+  pid_t pid = fork();
+
+  if (pid == 0) {
+    // Child process
+
+    // Wait on the semaphore
+    sem_wait(&mutex);
+
+    // Print a message
+    printf("Child process is signaled\n");
+
+    // Exit the process
+    exit(0);
+  } else {
+    // Parent process
+
+    // Sleep for a second
+    sleep(1);
+
+    // Signal the child process
+    signal_process();
+
+    // Wait for the child process to exit
+    wait(NULL);
+
+    // Print a message
+    printf("Parent process is done\n");
+  }
+
+  return 0;
+}
