@@ -1,0 +1,52 @@
+#include <stdio.h>
+
+struct block {
+  int size;
+  int allocated;
+};
+
+struct process {
+  int id;
+  int size;
+};
+
+int main() {
+  int n_blocks, n_processes;
+  scanf("%d %d", &n_blocks, &n_processes);
+
+  struct block blocks[n_blocks];
+  for (int i = 0; i < n_blocks; i++) {
+    scanf("%d", &blocks[i].size);
+    blocks[i].allocated = 0;
+  }
+
+  struct process processes[n_processes];
+  for (int i = 0; i < n_processes; i++) {
+    scanf("%d", &processes[i].size);
+    processes[i].id = i + 1;
+  }
+
+  // Find the worst-fit block for each process.
+  for (int i = 0; i < n_processes; i++) {
+    int worst_fit_block = -1;
+    int worst_fit_size = -1;
+    for (int j = 0; j < n_blocks; j++) {
+      if (blocks[j].allocated == 0 && blocks[j].size >= processes[i].size) {
+        if (worst_fit_size == -1 || blocks[j].size > worst_fit_size) {
+          worst_fit_block = j;
+          worst_fit_size = blocks[j].size;
+        }
+      }
+    }
+
+    // Allocate the worst-fit block to the process.
+    blocks[worst_fit_block].allocated = 1;
+  }
+
+  // Print the allocation status.
+  for (int i = 0; i < n_blocks; i++) {
+    printf("Block %d: size = %d, allocated = %d\n", i, blocks[i].size, blocks[i].allocated);
+  }
+
+  return 0;
+}
